@@ -1,0 +1,118 @@
+<html>
+    <head>
+        <title>Garage Application</title>
+        <style>
+                .container { 
+                max-width: 400px; 
+                margin: auto; 
+                background: white; 
+                padding: 20px; 
+                border-radius: 8px; 
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+                margin-bottom: 20px;
+            }
+            input, select, label { 
+                display: block;
+                width: 100%; 
+                padding: 10px; 
+                margin: 10px 0; 
+                box-sizing: border-box; 
+            }
+            body {font-family:'Lucida Sans', 'Lucida Sans Regular';
+            padding: 100px ;
+            background-image:url('/static/background.png');
+            background-size:cover;
+            background-position:center;
+            background-attachment:fixed;
+        }
+        button {
+            background-color: #3498db;
+            color: #ffffff;           
+            border: 2px solid #2980b9; 
+            padding: 10px 20px;        
+            border-radius: 5px;        
+            cursor: pointer;           
+            font-size: 16px;
+            transition: background-color 0.3s ease; 
+            }
+        #park-section{display:none;}
+        </style>
+    </head>
+    <body>
+        <div class="container" id="setup">
+            <h2>Garage Setup</h2>
+            <label>Number of Levels</label>
+            <input type="number" id="num_levels" placeholder="enter the number of levels" required>
+            <label>Enter Total Spots per Level</label>
+            <input type="number" id="spots_per_level" placeholder="enter the number of slots" required>
+            <button class="button" onclick="SetupGarage()">Create Garage</button>
+            <div id="setup-result"></div>
+        </div>
+        <div class="container" id="park-section">
+            <h2>Park a Vehicle</h2>
+            <label>Registration Number</label>
+            <input type="text" id="reg_num" placeholder="enter vehicle registration number" required>
+            <label>Vehicle Size</label>
+            <select id="size">
+                <option value="1">Motorcycle</option>
+                <option value="2">Car</option>
+                <option value="3">Truck</option>
+                <option value="4">Bus</option>
+            </select>
+            <button class="button" onclick="ParkVehicle()">Get Ticket</button>
+            <div id="result"></div>
+        </div>
+        <script>
+            async function SetupGarage()
+            {
+                    const NumLevels=document.getElementById('num_levels').value;
+                    const SpotsPerLevel=document.getElementById('spots_per_level').value;
+                    const SetupResultDiv=document.getElementById('setup-result');
+                    const response=await fetch('/api/setup',
+                        {
+                            method:'POST',
+                            headers:{'Content-Type':'application/json'},
+                            body:JSON.stringify({num_levels:parseInt(NumLevels),spots_per_level:parseInt(SpotsPerLevel)})
+                        }
+                        );
+                    const data=await response.json();
+                    if(data.success)
+                    {
+                        SetupResultDiv.className='success';
+                        SetupResultDiv.innerText=data.message;
+                        document.getElementById('park-section').style.display='block';
+                        document.querySelector('#setup button').style.display='none';
+                    }
+                    else
+                    {
+                        SetupResultDiv.className='error';
+                        SetupResultDiv.innerText="creation error!";
+                    }
+            }
+            async function ParkVehicle()
+            {
+                const RegNum=document.getElementById('reg_num').value;
+                const Size=document.getElementById('size').value;
+                const ResultDiv=document.getElementById('result');
+                const response = await fetch('/api/park',
+                    {
+                        method:'POST',
+                        headers:{'Content-Type':'application/json'},
+                        body:JSON.stringify({reg_num:RegNum,size:Size})
+
+                    });
+                    const data=await response.json();
+                    if (data.success)
+                    {
+                        ResultDiv.className='success';
+                        ResultDiv.innerText=data.message;
+                    }
+                    else
+                    {
+                        ResultDiv.className='error';
+                        ResultDiv.innerText="error:"+data.error;
+                    }
+            }
+        </script>
+    </body>
+</html>
