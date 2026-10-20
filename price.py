@@ -10,6 +10,8 @@ class Pricing:
 
     @staticmethod
     def bill(vehicle,minutes):
+        if vehicle.get_type()==VehicleType.BUS:
+            return 50.00
         if minutes <= 30:
             return 0.0
         hours = math.ceil(minutes/60.0)

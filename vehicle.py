@@ -48,3 +48,15 @@ class Truck(Vehicle):
             return True
         else:
             return False
+
+
+class Bus(Vehicle):
+    def get_size(self): return SpotSize.LARGE
+    def get_typpe(self): return VehicleType.BUS
+    def get_spots_needed(self):
+        return 4
+    def can_fit_in(self,spots_group):
+        if len(spots_group)==4:
+            return True
+        else:
+            return False
