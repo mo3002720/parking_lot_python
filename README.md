@@ -10,3 +10,6 @@ ALGORITHM
 4)verify the vehicle fits
 5)if yes, mark spot as taken and generate ticket
 6)if not found then raise an error
+
+
+use uvicorn main:app to run the webapp
